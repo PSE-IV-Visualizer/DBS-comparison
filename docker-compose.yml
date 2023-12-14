@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - ./docker/data:/var/lib/influxdb2  # I think it's $PWD/docker/data:/var/lib/influxdb2 for linux
+      - ./docker/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=root
+      - DOCKER_INFLUXDB_INIT_PASSWORD=example-password
+      - DOCKER_INFLUXDB_INIT_ORG=PSE
+      - DOCKER_INFLUXDB_INIT_BUCKET=annotations
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=I2Y9GIK1FD56zM7Ixrl8EuekD5bUST_k-4IxW-XrDKIOIVu-l_nhlc3N4Q1OAdS45ODY__JjDuV3rDwqtQCHfw==
